@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ramazon 2026 - Taqvim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #020617; /* Ultra to'q ko'k */
+            color: white;
+            margin: 0;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        .main-clock {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            text-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
+            background: linear-gradient(to bottom, #fff, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            border-radius: 28px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .bottom-nav {
+            background: rgba(15, 23, 42, 0.98);
+            border-top: 2px solid rgba(251, 191, 36, 0.4);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 85px;
+            display: grid;
+            grid-template-cols: 1fr 1fr;
+            z-index: 9999;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            color: #64748b;
+        }
+
+        .nav-item.active {
+            color: #fbbf24;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .time-badge {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 20px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .youtube-box {
+            background: linear-gradient(90deg, #ff0000, #990000);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pt-8 pb-4 text-center sticky top-0 bg-[#020617]/80 backdrop-blur-md z-50">
+        <p class="text-xs uppercase tracking-[0.3em] text-yellow-500 font-bold mb-1">O'zbekiston Vaqti</p>
+        <div id="bigClock" class="main-clock">12:00</div>
+        <div class="flex justify-center gap-2 mt-2">
+            <span class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-[10px] text-yellow-500 font-bold">RAMAZON 2026</span>
+        </div>
+    </div>
+
+    <div class="px-4 mt-4">
+        
+        <div id="taqvim-tab" class="tab-content active">
+            <div class="mb-6">
+                <select id="citySelect" onchange="loadTaqvim()" class="w-full bg-slate-800 border-2 border-yellow-500/50 p-4 rounded-2xl text-white font-black text-lg focus:ring-4 focus:ring-yellow-500/20 outline-none appearance-none">
+                    <option value="Toshkent">📍 Toshkent shahri</option>
+                    <option value="Andijon">📍 Andijon viloyati</option>
+                    <option value="Farg'ona">📍 Farg'ona viloyati</option>
+                    <option value="Namangan">📍 Namangan viloyati</option>
+                    <option value="Sirdaryo">📍 Sirdaryo viloyati</option>
+                    <option value="Jizzax">📍 Jizzax viloyati</option>
+                    <option value="Samarqand">📍 Samarqand viloyati</option>
+                    <option value="Buxoro">📍 Buxoro viloyati</option>
+                    <option value="Navoiy">📍 Navoiy viloyati</option>
+                    <option value="Qashqadaryo">📍 Qashqadaryo viloyati</option>
+                    <option value="Surxondaryo">📍 Surxondaryo viloyati</option>
+                    <option value="Xorazm">📍 Xorazm viloyati</option>
+                    <option value="Qoraqalpog'iston">📍 Qoraqalpog'iston</option>
+                </select>
+            </div>
+
+            <div id="taqvimList" class="space-y-4 pb-20">
+                </div>
+        </div>
+
+        <div id="duolar-tab" class="tab-content">
+            <div class="glass-card p-6 mb-4 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 opacity-10 text-6xl rotate-12"><i class="fas fa-sun"></i></div>
+                <h3 class="text-yellow-500 font-black text-xl mb-4 flex items-center gap-2">
+                    <i class="fas fa-hand-holding-heart"></i> SAHARLIK DUOSI
+                </h3>
+                <p class="text-2xl font-serif text-right mb-4 text-white leading-loose" dir="rtl">نويت أن أصوم صوم شهر رمضان من الفجر إلى المغرب خالصا لله تعالى</p>
+                <div class="time-badge p-4 italic text-sm text-slate-300">
+                    "Navaytu an asuma sovma shahri ramazona minal fajri ilal mag'ribi, xolisan lillahi ta'ala. Allohu akbar."
+                </div>
+            </div>
+
+            <div class="glass-card p-6 mb-6 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 opacity-10 text-6xl -rotate-12"><i class="fas fa-moon"></i></div>
+                <h3 class="text-orange-500 font-black text-xl mb-4 flex items-center gap-2">
+                    <i class="fas fa-utensils"></i> IFTORLIK DUOSI
+                </h3>
+                <p class="text-2xl font-serif text-right mb-4 text-white leading-loose" dir="rtl">اللهم لك صمت وبk آمنت وعليك توكلت وعلى رزقك أفطرت</p>
+                <div class="time-badge p-4 italic text-sm text-slate-300">
+                    "Allohumma laka sumtu va bika amantu va 'alayka tavakkaltu va 'ala rizqika aftartu."
+                </div>
+            </div>
+
+            <a href="https://youtube.com/@ramazonda?si=2lwCrmYTgL4UcdRr" target="_blank" class="youtube-box w-full py-5 rounded-3xl flex items-center justify-center gap-4 text-lg font-black tracking-widest active:scale-95 transition-transform">
+                <i class="fab fa-youtube text-3xl"></i>
+                YOUTUBE KANALIMIZ
+            </a>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div onclick="switchTab('taqvim')" id="btn-taqvim" class="nav-item active">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Taqvim</span>
+        </div>
+        <div onclick="switchTab('duolar')" id="btn-duolar" class="nav-item">
+            <i class="fas fa-pray"></i>
+            <span>Duolar</span>
+        </div>
+    </nav>
+
+    <script>
+        // Real-time Clock
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('bigClock').innerText = `${h}:${m}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Switch Tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tab + '-tab').classList.add('active');
+            document.getElementById('btn-' + tab).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // 2026 Ramadan Data (Based on astronomical Feb 18 start)
+        const regionDiff = {
+            "Toshkent": 0, "Andijon": -12, "Farg'ona": -10, "Namangan": -10,
+            "Sirdaryo": 2, "Jizzax": 6, "Samarqand": 10, "Buxoro": 18,
+            "Navoiy": 15, "Qashqadaryo": 14, "Surxondaryo": 11, "Xorazm": 30, "Qoraqalpog'iston": 35
+        };
+
+        function loadTaqvim() {
+            const city = document.getElementById('citySelect').value;
+            const diff = regionDiff[city];
+            const container = document.getElementById('taqvimList');
+            container.innerHTML = '';
+
+            let date = new Date(2026, 1, 18); // Feb 18
+
+            for (let i = 1; i <= 30; i++) {
+                // Base times for Day 1 in Tashkent
+                let sH = 5, sM = 35; // Saharlik 05:35
+                let iH = 18, iM = 05; // Iftorlik 18:05
+
+                // Simulate daily sun movement
+                let currentSaharlik = addMinutes(`${sH}:${sM}`, diff - (i * 1.5));
+                let currentIftorlik = addMinutes(`${iH}:${iM}`, diff + (i * 1.2));
+
+                const card = `
+                <div class="glass-card p-5 flex flex-col gap-4">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                        <span class="text-yellow-500 font-black text-xl">#${i}-KUN</span>
+                        <span class="text-sm font-bold opacity-70 italic text-white">${date.getDate()} ${date.toLocaleString('uz-UZ', {month: 'long'})}, 2026</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="time-badge p-3 text-center">
+                            <p class="text-[10px] text-yellow-500 font-black uppercase mb-1">Og'iz yopish</p>
+                            <p class="text-2xl font-black">${currentSaharlik}</p>
+                        </div>
+                        <div class="time-badge p-3 text-center border-orange-500/30">
+                            <p class="text-[10px] text-orange-500 font-black uppercase mb-1">Og'iz ochish</p>
+                            <p class="text-2xl font-black">${currentIftorlik}</p>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += card;
+                date.setDate(date.getDate() + 1);
+            }
+        }
+
+        function addMinutes(time, mins) {
+            let [h, m] = time.split(':').map(Number);
+            let d = new Date(0,0,0, h, m + mins);
+            return String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0');
+        }
+
+        // Initial Launch
+        window.onload = loadTaqvim;
+    </script>
+</body>
+</html>
