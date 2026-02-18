@@ -2,246 +2,221 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ramazon 2026 - Taqvim</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramazon 2026 - Rasmiy Taqvim</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;900&display=swap');
-
+        :root {
+            --bg: #020617;
+            --card: #0f172a;
+            --primary: #10b981;
+            --accent: #fbbf24;
+            --white: #f8fafc;
+        }
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: #020617; /* Ultra to'q ko'k */
-            color: white;
-            margin: 0;
-            overflow-x: hidden;
-            padding-bottom: 100px;
+            background-color: var(--bg);
+            color: var(--white);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0; padding: 10px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .app-container { width: 100%; max-width: 450px; }
+        
+        /* Header Dizayni */
+        .header {
+            text-align: center; padding: 30px 10px;
+            background: linear-gradient(to bottom, rgba(16,185,129,0.1), transparent);
+            border-radius: 30px; margin-bottom: 20px;
+        }
+        .header h1 { font-size: 26px; margin: 10px 0; color: var(--accent); letter-spacing: 1px; }
+
+        /* Viloyat tanlash va Tugma */
+        .settings-card {
+            background: var(--card);
+            padding: 20px; border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        select {
+            width: 100%; padding: 15px; border-radius: 12px;
+            background: #1e293b; color: white; border: 1px solid var(--primary);
+            font-size: 16px; margin-bottom: 15px; outline: none;
+        }
+        .btn-notify {
+            width: 100%; padding: 18px; border-radius: 15px; border: none;
+            background: linear-gradient(135deg, var(--primary), #059669);
+            color: white; font-weight: 800; font-size: 15px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.4);
         }
 
-        .main-clock {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
-            text-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
-            background: linear-gradient(to bottom, #fff, #fbbf24);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Yo'riqnoma */
+        #guide {
+            display: none; background: rgba(251,191,36,0.1);
+            border: 1px dashed var(--accent); padding: 15px;
+            border-radius: 15px; margin-top: 15px; font-size: 13px; line-height: 1.5;
         }
 
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(251, 191, 36, 0.25);
-            border-radius: 28px;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-        }
-
-        .bottom-nav {
-            background: rgba(15, 23, 42, 0.98);
-            border-top: 2px solid rgba(251, 191, 36, 0.4);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 85px;
-            display: grid;
-            grid-template-cols: 1fr 1fr;
-            z-index: 9999;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* Taqvim Ro'yxati */
+        .day-card {
+            background: var(--card); margin-bottom: 10px; padding: 15px 20px;
+            border-radius: 18px; display: flex; justify-content: space-between;
+            align-items: center; border: 1px solid rgba(255,255,255,0.05);
             transition: 0.3s;
-            color: #64748b;
         }
+        .day-card:hover { border-color: var(--primary); transform: scale(1.02); }
+        .day-info { display: flex; flex-direction: column; }
+        .day-num { color: var(--primary); font-weight: 900; font-size: 20px; }
+        .day-date { color: #64748b; font-size: 12px; }
+        
+        .time-info { text-align: right; }
+        .time-row { display: flex; gap: 15px; align-items: center; }
+        .t-box { display: flex; flex-direction: column; }
+        .t-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+        .t-val { font-weight: 700; font-size: 16px; }
+        .sahr { color: var(--white); }
+        .ift { color: var(--accent); }
 
-        .nav-item.active {
-            color: #fbbf24;
-        }
-
-        .nav-item i {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .nav-item span {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .time-badge {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 20px;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-        }
-
-        .youtube-box {
-            background: linear-gradient(90deg, #ff0000, #990000);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .ios-info { color: #94a3b8; font-size: 11px; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="pt-8 pb-4 text-center sticky top-0 bg-[#020617]/80 backdrop-blur-md z-50">
-        <p class="text-xs uppercase tracking-[0.3em] text-yellow-500 font-bold mb-1">O'zbekiston Vaqti</p>
-        <div id="bigClock" class="main-clock">12:00</div>
-        <div class="flex justify-center gap-2 mt-2">
-            <span class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-[10px] text-yellow-500 font-bold">RAMAZON 2026</span>
+    <div class="app-container">
+        <div class="header animate__animated animate__fadeInDown">
+            <i data-lucide="moon-star" style="color:var(--accent); width:45px; height:45px;"></i>
+            <h1>RAMAZON 2026</h1>
+            <p style="color:#94a3b8;">1447-Hijriy yil taqvimi</p>
         </div>
+
+        <div class="settings-card animate__animated animate__fadeIn">
+            <label style="font-size: 12px; color: var(--primary); margin-bottom: 8px; display: block;">HUDUDNI TANLANG:</label>
+            <select id="regionSelect" onchange="renderCalendar()">
+                <option value="Toshkent">Toshkent</option>
+                <option value="Andijon">Andijon (-10 min)</option>
+                <option value="Buxoro">Buxoro (+21 min)</option>
+                <option value="Samarqand">Samarqand (+9 min)</option>
+                <option value="Xorazm">Xorazm (+35 min)</option>
+                <option value="Nukus">Nukus (+38 min)</option>
+                <option value="Namangan">Namangan (-8 min)</option>
+                <option value="Farg'ona">Farg'ona (-9 min)</option>
+                <option value="Jizzax">Jizzax (+6 min)</option>
+                <option value="Navoiy">Navoiy (+15 min)</option>
+                <option value="Qashqadaryo">Qashqadaryo (+15 min)</option>
+                <option value="Surxondaryo">Surxondaryo (+10 min)</option>
+            </select>
+
+            <button class="btn-notify" onclick="showGuide()">
+                <i data-lucide="bell-ring"></i> Bildirishnomalarni yoqish
+            </button>
+
+            <div id="guide" class="animate__animated animate__pulse">
+                <p><strong>Xavfsiz va Ishonchli:</strong></p>
+                1. "Taqvimga saqlash" tugmasini bosing.<br>
+                2. Yuklangan faylni ochib, <b>"Add All"</b> (Barchasini qo'shish) ni tanlang.<br>
+                3. Telefoningiz 10 daqiqa qolganda sizni budilnik kabi ogohlantiradi.<br>
+                <button class="btn-notify" style="margin-top:15px; background:var(--accent); color:#000;" onclick="downloadICS()">
+                    Taqvimga saqlash (.ics)
+                </button>
+            </div>
+            <p class="ios-info">iOS va Android tizimlarida 100% xavfsiz ishlaydi</p>
+        </div>
+
+        <div id="calendarList"></div>
     </div>
-
-    <div class="px-4 mt-4">
-        
-        <div id="taqvim-tab" class="tab-content active">
-            <div class="mb-6">
-                <select id="citySelect" onchange="loadTaqvim()" class="w-full bg-slate-800 border-2 border-yellow-500/50 p-4 rounded-2xl text-white font-black text-lg focus:ring-4 focus:ring-yellow-500/20 outline-none appearance-none">
-                    <option value="Toshkent">📍 Toshkent shahri</option>
-                    <option value="Andijon">📍 Andijon viloyati</option>
-                    <option value="Farg'ona">📍 Farg'ona viloyati</option>
-                    <option value="Namangan">📍 Namangan viloyati</option>
-                    <option value="Sirdaryo">📍 Sirdaryo viloyati</option>
-                    <option value="Jizzax">📍 Jizzax viloyati</option>
-                    <option value="Samarqand">📍 Samarqand viloyati</option>
-                    <option value="Buxoro">📍 Buxoro viloyati</option>
-                    <option value="Navoiy">📍 Navoiy viloyati</option>
-                    <option value="Qashqadaryo">📍 Qashqadaryo viloyati</option>
-                    <option value="Surxondaryo">📍 Surxondaryo viloyati</option>
-                    <option value="Xorazm">📍 Xorazm viloyati</option>
-                    <option value="Qoraqalpog'iston">📍 Qoraqalpog'iston</option>
-                </select>
-            </div>
-
-            <div id="taqvimList" class="space-y-4 pb-20">
-                </div>
-        </div>
-
-        <div id="duolar-tab" class="tab-content">
-            <div class="glass-card p-6 mb-4 relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 opacity-10 text-6xl rotate-12"><i class="fas fa-sun"></i></div>
-                <h3 class="text-yellow-500 font-black text-xl mb-4 flex items-center gap-2">
-                    <i class="fas fa-hand-holding-heart"></i> SAHARLIK DUOSI
-                </h3>
-                <p class="text-2xl font-serif text-right mb-4 text-white leading-loose" dir="rtl">نويت أن أصوم صوم شهر رمضان من الفجر إلى المغرب خالصا لله تعالى</p>
-                <div class="time-badge p-4 italic text-sm text-slate-300">
-                    "Navaytu an asuma sovma shahri ramazona minal fajri ilal mag'ribi, xolisan lillahi ta'ala. Allohu akbar."
-                </div>
-            </div>
-
-            <div class="glass-card p-6 mb-6 relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 opacity-10 text-6xl -rotate-12"><i class="fas fa-moon"></i></div>
-                <h3 class="text-orange-500 font-black text-xl mb-4 flex items-center gap-2">
-                    <i class="fas fa-utensils"></i> IFTORLIK DUOSI
-                </h3>
-                <p class="text-2xl font-serif text-right mb-4 text-white leading-loose" dir="rtl">اللهم لك صمت وبk آمنت وعليك توكلت وعلى رزقك أفطرت</p>
-                <div class="time-badge p-4 italic text-sm text-slate-300">
-                    "Allohumma laka sumtu va bika amantu va 'alayka tavakkaltu va 'ala rizqika aftartu."
-                </div>
-            </div>
-
-            <a href="https://youtube.com/@ramazonda?si=2lwCrmYTgL4UcdRr" target="_blank" class="youtube-box w-full py-5 rounded-3xl flex items-center justify-center gap-4 text-lg font-black tracking-widest active:scale-95 transition-transform">
-                <i class="fab fa-youtube text-3xl"></i>
-                YOUTUBE KANALIMIZ
-            </a>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <div onclick="switchTab('taqvim')" id="btn-taqvim" class="nav-item active">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Taqvim</span>
-        </div>
-        <div onclick="switchTab('duolar')" id="btn-duolar" class="nav-item">
-            <i class="fas fa-pray"></i>
-            <span>Duolar</span>
-        </div>
-    </nav>
 
     <script>
-        // Real-time Clock
-        function updateClock() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('bigClock').innerText = `${h}:${m}`;
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.backgroundColor = "#020617";
+
+        const offsets = { "Toshkent":0, "Andijon":-10, "Buxoro":21, "Samarqand":9, "Xorazm":35, "Nukus":38, "Namangan":-8, "Farg'ona":-9, "Jizzax":6, "Navoiy":15, "Qashqadaryo":15, "Surxondaryo":10 };
+
+        // 2026-yil 19-fevraldan boshlab 30 kunlik Toshkent vaqtlari (Fatvo.uz asosida)
+        const ramadanTimes = [
+            {s:"05:35", i:"18:05"}, {s:"05:34", i:"18:06"}, {s:"05:33", i:"18:07"}, {s:"05:31", i:"18:08"}, {s:"05:30", i:"18:10"},
+            {s:"05:28", i:"18:11"}, {s:"05:27", i:"18:12"}, {s:"05:25", i:"18:13"}, {s:"05:24", i:"18:14"}, {s:"05:22", i:"18:15"},
+            {s:"05:21", i:"18:17"}, {s:"05:19", i:"18:18"}, {s:"05:18", i:"18:19"}, {s:"05:16", i:"18:20"}, {s:"05:14", i:"18:21"},
+            {s:"05:13", i:"18:22"}, {s:"05:11", i:"18:23"}, {s:"05:09", i:"18:25"}, {s:"05:08", i:"18:26"}, {s:"05:06", i:"18:27"},
+            {s:"05:04", i:"18:28"}, {s:"05:03", i:"18:29"}, {s:"05:01", i:"18:30"}, {s:"04:59", i:"18:31"}, {s:"04:58", i:"18:32"},
+            {s:"04:56", i:"18:33"}, {s:"04:54", i:"18:35"}, {s:"04:53", i:"18:36"}, {s:"04:51", i:"18:37"}, {s:"04:49", i:"18:38"}
+        ];
+
+        function calc(t, m) {
+            let [h, min] = t.split(':').map(Number);
+            let d = new Date(); d.setHours(h, min + m);
+            return d.toTimeString().slice(0, 5);
         }
-        setInterval(updateClock, 1000);
-        updateClock();
 
-        // Switch Tabs
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tab + '-tab').classList.add('active');
-            document.getElementById('btn-' + tab).classList.add('active');
-            window.scrollTo(0, 0);
-        }
+        function renderCalendar() {
+            const reg = document.getElementById('regionSelect').value;
+            const off = offsets[reg];
+            const list = document.getElementById('calendarList');
+            list.innerHTML = '';
 
-        // 2026 Ramadan Data (Based on astronomical Feb 18 start)
-        const regionDiff = {
-            "Toshkent": 0, "Andijon": -12, "Farg'ona": -10, "Namangan": -10,
-            "Sirdaryo": 2, "Jizzax": 6, "Samarqand": 10, "Buxoro": 18,
-            "Navoiy": 15, "Qashqadaryo": 14, "Surxondaryo": 11, "Xorazm": 30, "Qoraqalpog'iston": 35
-        };
-
-        function loadTaqvim() {
-            const city = document.getElementById('citySelect').value;
-            const diff = regionDiff[city];
-            const container = document.getElementById('taqvimList');
-            container.innerHTML = '';
-
-            let date = new Date(2026, 1, 18); // Feb 18
-
-            for (let i = 1; i <= 30; i++) {
-                // Base times for Day 1 in Tashkent
-                let sH = 5, sM = 35; // Saharlik 05:35
-                let iH = 18, iM = 05; // Iftorlik 18:05
-
-                // Simulate daily sun movement
-                let currentSaharlik = addMinutes(`${sH}:${sM}`, diff - (i * 1.5));
-                let currentIftorlik = addMinutes(`${iH}:${iM}`, diff + (i * 1.2));
-
-                const card = `
-                <div class="glass-card p-5 flex flex-col gap-4">
-                    <div class="flex justify-between items-center border-b border-white/10 pb-2">
-                        <span class="text-yellow-500 font-black text-xl">#${i}-KUN</span>
-                        <span class="text-sm font-bold opacity-70 italic text-white">${date.getDate()} ${date.toLocaleString('uz-UZ', {month: 'long'})}, 2026</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="time-badge p-3 text-center">
-                            <p class="text-[10px] text-yellow-500 font-black uppercase mb-1">Og'iz yopish</p>
-                            <p class="text-2xl font-black">${currentSaharlik}</p>
+            ramadanTimes.forEach((v, i) => {
+                const day = i + 1;
+                const dateText = (i + 19) > 28 ? (i + 19 - 28) + "-mart" : (i + 19) + "-fevral";
+                list.innerHTML += `
+                    <div class="day-card animate__animated animate__fadeInUp" style="animation-delay: ${i*0.03}s">
+                        <div class="day-info">
+                            <span class="day-num">${day}</span>
+                            <span class="day-date">${dateText}</span>
                         </div>
-                        <div class="time-badge p-3 text-center border-orange-500/30">
-                            <p class="text-[10px] text-orange-500 font-black uppercase mb-1">Og'iz ochish</p>
-                            <p class="text-2xl font-black">${currentIftorlik}</p>
+                        <div class="time-info">
+                            <div class="time-row">
+                                <div class="t-box">
+                                    <span class="t-label">Saharlik</span>
+                                    <span class="t-val sahr">${calc(v.s, off)}</span>
+                                </div>
+                                <div class="t-box">
+                                    <span class="t-label">Iftorlik</span>
+                                    <span class="t-val ift">${calc(v.i, off)}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>`;
-                container.innerHTML += card;
-                date.setDate(date.getDate() + 1);
-            }
+                `;
+            });
+            lucide.createIcons();
         }
 
-        function addMinutes(time, mins) {
-            let [h, m] = time.split(':').map(Number);
-            let d = new Date(0,0,0, h, m + mins);
-            return String(d.getHours()).padStart(2, '0') + ":" + String(d.getMinutes()).padStart(2, '0');
+        function showGuide() { document.getElementById('guide').style.display = 'block'; }
+
+        function downloadICS() {
+            const reg = document.getElementById('regionSelect').value;
+            const off = offsets[reg];
+            let ics = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//RamazonTaqvim//UZ\n";
+
+            ramadanTimes.forEach((v, i) => {
+                const dayNum = i + 19;
+                const m = dayNum > 28 ? "03" : "02";
+                const d = dayNum > 28 ? String(dayNum - 28).padStart(2, '0') : String(dayNum).padStart(2, '0');
+                const date = `2026${m}${d}`;
+                
+                const sT = calc(v.s, off).replace(':','');
+                const iT = calc(v.i, off).replace(':','');
+
+                // Saharlik uchun: 10 min oldin bildirishnoma
+                ics += `BEGIN:VEVENT\nSUMMARY:Saharlik (${reg})\nDTSTART:${date}T${sT}00\nDESCRIPTION:10 daqiqadan so'ng saharlik tugaydi! Hozir vaqt: ${calc(v.s, off)}\nBEGIN:VALARM\nTRIGGER:-PT10M\nACTION:DISPLAY\nDESCRIPTION:Saharlik tugashiga 10 daqiqa qoldi! (${calc(v.s, off)}da yopiladi)\nEND:VALARM\nEND:VEVENT\n`;
+                
+                // Iftorlik uchun: 10 min oldin bildirishnoma
+                ics += `BEGIN:VEVENT\nSUMMARY:Iftorlik (${reg})\nDTSTART:${date}T${iT}00\nDESCRIPTION:Iftorlik vaqti bo'ldi: ${calc(v.i, off)}\nBEGIN:VALARM\nTRIGGER:-PT10M\nACTION:DISPLAY\nDESCRIPTION:Iftorlikka 10 daqiqa qoldi! (${calc(v.i, off)}da ochiladi)\nEND:VALARM\nEND:VEVENT\n`;
+            });
+
+            ics += "END:VCALENDAR";
+            const blob = new Blob([ics], {type: 'text/calendar'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Ramazon_2026_${reg}.ics`;
+            link.click();
+            tg.showConfirm("Taqvim fayli yuklandi. Uni ochib 'Barchasini qo'shish' tugmasini bosishni unutmang!");
         }
 
-        // Initial Launch
-        window.onload = loadTaqvim;
+        renderCalendar();
     </script>
 </body>
 </html>
